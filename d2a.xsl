@@ -1409,8 +1409,8 @@ pass:[<xsl:copy-of select="."/>]
   <xsl:apply-templates select="*[not(self::title)]"/>
 </xsl:template>
 
-<xsl:template match="varname">
-    <xsl:text>`</xsl:text>
+<xsl:template match="varname|computeroutput">
+    <xsl:text>[x-]`</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>`</xsl:text>
 </xsl:template>
