@@ -1409,6 +1409,12 @@ pass:[<xsl:copy-of select="."/>]
   <xsl:apply-templates select="*[not(self::title)]"/>
 </xsl:template>
 
+<xsl:template match="varname">
+    <xsl:text>`</xsl:text>
+    <xsl:apply-templates/>
+    <xsl:text>`</xsl:text>
+</xsl:template>
+
 <!-- Utility functions/templates -->
 <xsl:function name="util:carriage-returns">
   <xsl:param name="n"/>
