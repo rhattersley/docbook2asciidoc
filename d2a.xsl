@@ -1400,8 +1400,10 @@ pass:[<xsl:copy-of select="."/>]
 </xsl:template>
 
 <xsl:template match="section">
+  <xsl:value-of select="util:carriage-returns(2)"/>
   <xsl:call-template name="process-id"/>
-  <xsl:sequence select="string-join (('&#10;&#10;', for $i in (1 to count (ancestor::section) + 3) return '='),'')"/>
+  <xsl:sequence select="string-join ((for $i in (1 to count (ancestor::section) + 3) return '='),'')"/>
+  <xsl:text> </xsl:text>
   <xsl:apply-templates select="title"/>
   <xsl:value-of select="util:carriage-returns(2)"/>
   <xsl:apply-templates select="*[not(self::title)]"/>
