@@ -34,6 +34,16 @@
       <xsl:apply-templates select="bookinfo/title"/>
     </xsl:when>
   </xsl:choose>
+  <xsl:value-of select="util:carriage-returns(1)"/>
+  <xsl:apply-templates select="bookinfo//author"/>
+  <xsl:value-of select="util:carriage-returns(1)"/>
+  <xsl:apply-templates select="bookinfo/subtitle"/>
+  <xsl:value-of select="util:carriage-returns(2)"/>
+  <xsl:text>== About the authors</xsl:text>
+  <xsl:value-of select="util:carriage-returns(1)"/>
+  <xsl:apply-templates select="bookinfo/authorgroup"/>
+  <xsl:value-of select="util:carriage-returns(1)"/>
+  <xsl:apply-templates select="bookinfo/othercredit"/>
   <xsl:choose>
     <xsl:when test="$chunk-output != 'false'">
       <xsl:apply-templates select="*[not(self::title)]" mode="chunk"/>
@@ -43,7 +53,36 @@
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
-  
+
+<xsl:template match="subtitle/text()">
+    <xsl:value-of select="replace(., '\n\s+', ' ', 'm')"/>
+</xsl:template>
+
+<xsl:template match="author">
+    <xsl:apply-templates select="firstname"/>
+    <xsl:text> </xsl:text>
+    <xsl:apply-templates select="surname"/>
+    <xsl:if test="position() &lt; last()"><xsl:text>; </xsl:text></xsl:if>
+</xsl:template>
+
+<xsl:template match="authorgroup">
+    <xsl:value-of select="util:carriage-returns(1)"/>
+    <xsl:text>=== </xsl:text>
+    <xsl:apply-templates select="title"/>
+    <xsl:value-of select="util:carriage-returns(1)"/>
+    <xsl:apply-templates select="author" mode="full"/>
+</xsl:template>
+
+<xsl:template match="author" mode="full">
+    <xsl:text>* </xsl:text>
+    <xsl:apply-templates select="firstname"/>
+    <xsl:text> </xsl:text>
+    <xsl:apply-templates select="surname"/>
+    <xsl:text>, </xsl:text>
+    <xsl:apply-templates select="affiliation"/>
+    <xsl:value-of select="util:carriage-returns(1)"/>
+</xsl:template>
+
 <xsl:template match="//comment()">
 
 ++++++++++++++++++++++++++++++++++++++
@@ -68,7 +107,6 @@
 <xsl:template match="book/title|bookinfo/title">
   <xsl:text>= </xsl:text>
   <xsl:value-of select="."/>
-  <xsl:value-of select="util:carriage-returns(2)"/>
 </xsl:template>
 
 <xsl:template match="part" mode="chunk">
