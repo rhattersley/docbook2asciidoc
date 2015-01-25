@@ -546,11 +546,12 @@
 </xsl:template>
 
 <xsl:template match="biblioentry">
-    <!--
-    -->
     <xsl:text>- [[[</xsl:text>
-    <xsl:value-of select="abbrev"/>
+    <xsl:value-of select="@id"/>
     <xsl:text>]]] </xsl:text>
+    <xsl:if test="biblioset">
+        <xsl:apply-templates select="biblioset"/>
+    </xsl:if>
     <xsl:if test="title">
         <xsl:apply-templates select="title"/>
         <xsl:text>. </xsl:text>
@@ -574,6 +575,27 @@
         <xsl:text>.</xsl:text>
     </xsl:if>
     <xsl:value-of select="util:carriage-returns(1)"/>
+</xsl:template>
+
+<xsl:template match="biblioset[@relation='article']">
+    <xsl:apply-templates select="authorgroup/author">
+        <xsl:with-param name="separator">, </xsl:with-param>
+    </xsl:apply-templates>
+    <xsl:text>. </xsl:text>
+    <xsl:apply-templates select="date"/>
+    <xsl:text>. </xsl:text>
+    <xsl:text>“</xsl:text>
+    <xsl:apply-templates select="title"/>
+    <xsl:text>”</xsl:text>
+    <xsl:text>. </xsl:text>
+    <xsl:text>__</xsl:text>
+    <xsl:apply-templates select="biblioset/title"/>
+    <xsl:text>__</xsl:text>
+    <xsl:text>. </xsl:text>
+    <xsl:apply-templates select="biblioset/volumenum"/>
+    <xsl:text>. </xsl:text>
+    <xsl:apply-templates select="pagenums"/>
+    <xsl:text>.</xsl:text>
 </xsl:template>
 
 <!-- Use passthrough for reference sections -->
@@ -1551,10 +1573,12 @@ pass:[<xsl:copy-of select="."/>]
 <xsl:template match="indexterm" mode="copy-and-drop-indexterms"/>
 
 <xsl:template match="biblioref">
-    <xsl:text>&lt;&lt;</xsl:text>
+    <xsl:text>[&#xE801;&#xE801;</xsl:text>
     <xsl:variable name="linkend" select="string(@linkend)"/>
+    <xsl:value-of select="$linkend"/>
+    <xsl:text>,</xsl:text>
     <xsl:value-of select="/book/bibliography//biblioentry[@id=$linkend]/abbrev"/>
-    <xsl:text>&gt;&gt;</xsl:text>
+    <xsl:text>&#xE802;&#xE802;]</xsl:text>
 </xsl:template>
 
 </xsl:stylesheet>
