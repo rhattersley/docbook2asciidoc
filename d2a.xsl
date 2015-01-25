@@ -38,12 +38,17 @@
   <xsl:apply-templates select="bookinfo//author"/>
   <xsl:value-of select="util:carriage-returns(1)"/>
   <xsl:apply-templates select="bookinfo/subtitle"/>
+  <xsl:value-of select="util:carriage-returns(1)"/>
+  <xsl:text>:sectanchors:</xsl:text>
+  <xsl:value-of select="util:carriage-returns(1)"/>
+  <xsl:text>:toc: macro</xsl:text>
   <xsl:value-of select="util:carriage-returns(2)"/>
   <xsl:text>== About the authors</xsl:text>
   <xsl:value-of select="util:carriage-returns(1)"/>
   <xsl:apply-templates select="bookinfo/authorgroup"/>
   <xsl:value-of select="util:carriage-returns(1)"/>
   <xsl:apply-templates select="bookinfo/othercredit"/>
+  <xsl:text>toc::[]</xsl:text>
   <xsl:choose>
     <xsl:when test="$chunk-output != 'false'">
       <xsl:apply-templates select="*[not(self::title)]" mode="chunk"/>
@@ -188,6 +193,16 @@
     <xsl:text>.asciidoc</xsl:text>
   </xsl:variable>
   <xsl:value-of select="util:carriage-returns(2)"/>
+  <xsl:choose>
+    <xsl:when test="self::chapter">
+      <xsl:text>:numbered:</xsl:text>
+      <xsl:value-of select="util:carriage-returns(1)"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>:numbered!:</xsl:text>
+      <xsl:value-of select="util:carriage-returns(1)"/>
+    </xsl:otherwise>
+  </xsl:choose>
   <xsl:text>include::</xsl:text>
   <xsl:value-of select="$doc-name"/>
   <xsl:text>[]</xsl:text>
