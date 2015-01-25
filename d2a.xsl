@@ -59,10 +59,11 @@
 </xsl:template>
 
 <xsl:template match="author">
+    <xsl:param name="separator" select="'; '"/>
     <xsl:apply-templates select="firstname"/>
     <xsl:text> </xsl:text>
     <xsl:apply-templates select="surname"/>
-    <xsl:if test="position() &lt; last()"><xsl:text>; </xsl:text></xsl:if>
+    <xsl:if test="position() &lt; last()"><xsl:value-of select="$separator"/></xsl:if>
 </xsl:template>
 
 <xsl:template match="authorgroup">
@@ -512,7 +513,7 @@
 </xsl:template>
 
 <!-- Use passthrough for bibliography -->
-<xsl:template match="bibliography">
+<xsl:template match="bibliography" mode="oreilly">
 ++++++++++++++++++++++++++++++++++++++
 <xsl:choose>
   <xsl:when test="$strip-indexterms='false'">
@@ -526,6 +527,53 @@
   </xsl:otherwise>
 </xsl:choose>
 ++++++++++++++++++++++++++++++++++++++
+</xsl:template>
+
+<xsl:template match="bibliography">
+    <xsl:text>[bibliography]</xsl:text>
+    <xsl:value-of select="util:carriage-returns(1)"/>
+    <xsl:text>== </xsl:text>
+    <xsl:value-of select="title"/>
+    <xsl:value-of select="util:carriage-returns(2)"/>
+    <xsl:apply-templates select="bibliodiv"/>
+</xsl:template>
+
+<xsl:template match="bibliodiv">
+    <xsl:text>=== </xsl:text>
+    <xsl:value-of select="title"/>
+    <xsl:value-of select="util:carriage-returns(2)"/>
+    <xsl:apply-templates select="biblioentry"/>
+</xsl:template>
+
+<xsl:template match="biblioentry">
+    <!--
+    -->
+    <xsl:text>- [[[</xsl:text>
+    <xsl:value-of select="abbrev"/>
+    <xsl:text>]]] </xsl:text>
+    <xsl:if test="title">
+        <xsl:apply-templates select="title"/>
+        <xsl:text>. </xsl:text>
+    </xsl:if>
+    <xsl:if test="bibliosource">
+        <xsl:apply-templates select="bibliosource"/>
+        <xsl:text>. </xsl:text>
+    </xsl:if>
+    <xsl:if test="publisher">
+        <xsl:apply-templates select="publisher"/>
+        <xsl:text>. </xsl:text>
+    </xsl:if>
+    <xsl:if test="authorgroup">
+        <xsl:apply-templates select="authorgroup/author">
+            <xsl:with-param name="separator">, </xsl:with-param>
+        </xsl:apply-templates>
+        <xsl:text>. </xsl:text>
+    </xsl:if>
+    <xsl:if test="date">
+        <xsl:apply-templates select="date"/>
+        <xsl:text>.</xsl:text>
+    </xsl:if>
+    <xsl:value-of select="util:carriage-returns(1)"/>
 </xsl:template>
 
 <!-- Use passthrough for reference sections -->
@@ -1501,5 +1549,12 @@ pass:[<xsl:copy-of select="."/>]
 </xsl:template>
 
 <xsl:template match="indexterm" mode="copy-and-drop-indexterms"/>
+
+<xsl:template match="biblioref">
+    <xsl:text>&lt;&lt;</xsl:text>
+    <xsl:variable name="linkend" select="string(@linkend)"/>
+    <xsl:value-of select="/book/bibliography//biblioentry[@id=$linkend]/abbrev"/>
+    <xsl:text>&gt;&gt;</xsl:text>
+</xsl:template>
 
 </xsl:stylesheet>
