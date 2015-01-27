@@ -326,6 +326,11 @@
 <xsl:value-of select="replace(., '\n\s+', ' ', 'm')"/>
 </xsl:template>
 
+<!-- If para has just one text node (no element children), just normalize space in it -->
+<xsl:template match="para[count(element()) = 0]/text()">
+  <xsl:value-of select="normalize-space(.)"/>
+</xsl:template>
+
 <!-- Strip leading whitespace from first text node in <term>, if it does not have preceding element siblings --> 
 <xsl:template match="term[count(element()) != 0]/text()[1][not(preceding-sibling::element())]">
   <xsl:call-template name="strip-whitespace">
